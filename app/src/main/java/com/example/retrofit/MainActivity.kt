@@ -16,6 +16,9 @@ import com.example.retrofit.api.configuration.LiveDataCallAdapterFactory
 import com.example.retrofit.data.LoginData
 import com.example.retrofit.data.User
 import com.google.gson.Gson
+import kotlin.reflect.KClass
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.declaredFunctions
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,4 +50,17 @@ class MainActivity : AppCompatActivity() {
         .addCallAdapterFactory(LiveDataCallAdapterFactory())
         .client(OkHttpClient.Builder().addInterceptor(GlobalInterceptor()).build())
         .build()
+
+    private fun getTypesAdapterOfRetrofitApiServiceKClass(retrofitApiServiceKClass: KClass<*>): List<KTypeProjection> {
+        val typesAdapter = mutableListOf<KTypeProjection>()
+        retrofitApiServiceKClass.declaredFunctions.forEach {
+            val returnType = it.returnType
+            returnType.arguments.forEach { apiResponse ->
+                apiResponse.type?.arguments?.forEach { type ->
+                    typesAdapter.add(type)
+                }
+            }
+        }
+        return typesAdapter
+    }
 }
