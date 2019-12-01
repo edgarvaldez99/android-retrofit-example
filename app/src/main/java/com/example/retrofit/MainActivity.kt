@@ -1,18 +1,28 @@
 package com.example.retrofit
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.Observer
+import com.example.retrofit.api.AUTH_KEY
+import com.example.retrofit.api.ApiResponse
 import com.example.retrofit.api.AuthApiService
+import com.example.retrofit.api.FreightageApiService
 import com.example.retrofit.data.LoginData
-import com.example.retrofit.injection.DaggerAuthComponent
+import com.example.retrofit.injection.DaggerAppComponent
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authApiService: AuthApiService
+
+    @Inject
+    lateinit var freightageApiService: FreightageApiService
+
+    lateinit var TOKEN: String
 
     companion object {
         val TAG = MainActivity::class.java.simpleName
@@ -22,10 +32,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DaggerAuthComponent.builder().build().inject(this);
+        DaggerAppComponent.builder().build().inject(this)
 
         authApiService.login(LoginData("55555", "123456")).observe(this, Observer {
-            Log.w(TAG, it.toString())
+            when (it) {
+                is ApiResponse.ApiSuccessResponse -> {
+                    TOKEN = it.body.authenticationToken
+                    getSharedPreferences("USER", Context.MODE_PRIVATE).edit {
+                        putString("TOKEN", TOKEN)
+                    }
+
+                    freightageApiService.getFreightage("$AUTH_KEY:$TOKEN").observe(this, Observer { res ->
+                        when(res) {
+                            is ApiResponse.ApiSuccessResponse -> {
+                                res.body.data.forEach { freightage ->
+                                    Log.w(TAG, freightage.toString())
+                                }
+                            }
+                            is ApiResponse.ApiErrorResponse -> {
+                                Log.e(TAG, res.errorMessage)
+                            }
+                            else -> Log.w(TAG, "Nothing happened")
+                        }
+                    })
+                }
+                else -> Log.w(TAG, it.toString())
+            }
         })
     }
 }
