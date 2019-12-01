@@ -16,9 +16,6 @@ import com.example.retrofit.api.configuration.LiveDataCallAdapterFactory
 import com.example.retrofit.data.LoginData
 import com.example.retrofit.data.User
 import com.google.gson.Gson
-import kotlin.reflect.KClass
-import kotlin.reflect.KTypeProjection
-import kotlin.reflect.full.declaredFunctions
 
 class MainActivity : AppCompatActivity() {
 
