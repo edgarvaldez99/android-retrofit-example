@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         authApiService.login(LoginData("55555", "123456")).observe(this, Observer {
             when (it) {
-                is ApiSuccessResponse -> {
+                is SuccessResponse -> {
                     TOKEN = it.body.data.authenticationToken
                     getSharedPreferences("USER", Context.MODE_PRIVATE).edit {
                         putString("TOKEN", TOKEN)
@@ -41,18 +41,17 @@ class MainActivity : AppCompatActivity() {
 
                     freightageApiService.getFreightage("$AUTH_KEY:$TOKEN").observe(this, Observer { res ->
                         when(res) {
-                            is ApiSuccessResponse -> {
+                            is SuccessResponse -> {
                                 res.body.data.forEach { freightage ->
                                     Log.w(TAG, freightage.toString())
                                 }
                             }
-                            is ApiErrorResponse -> {
-                                Log.e(TAG, res.errorMessage)
-                            }
+                            is ErrorResponse -> Log.e(TAG, res.message)
                             else -> Log.w(TAG, "Nothing happened")
                         }
                     })
                 }
+                is ErrorResponse -> Log.e(TAG, it.message)
                 else -> Log.w(TAG, it.toString())
             }
         })

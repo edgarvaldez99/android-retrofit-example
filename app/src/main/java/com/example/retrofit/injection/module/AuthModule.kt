@@ -2,7 +2,7 @@ package com.example.retrofit.injection.module
 
 import com.example.retrofit.api.AuthApiService
 import com.example.retrofit.api.configuration.Deserializer
-import com.example.retrofit.data.ResponseData
+import com.example.retrofit.api.ResponseData
 import com.example.retrofit.data.User
 import com.example.retrofit.executor.IOExecutors
 import com.example.retrofit.utils.getRetrofitBuilder

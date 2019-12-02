@@ -3,7 +3,7 @@ package com.example.retrofit.injection.module
 import com.example.retrofit.api.FreightageApiService
 import com.example.retrofit.api.configuration.Deserializer
 import com.example.retrofit.data.Freightage
-import com.example.retrofit.data.ResponseData
+import com.example.retrofit.api.ResponseData
 import com.example.retrofit.utils.getRetrofitBuilder
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
