@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.Observer
-import com.example.retrofit.api.AUTH_KEY
-import com.example.retrofit.api.ApiResponse
-import com.example.retrofit.api.AuthApiService
-import com.example.retrofit.api.FreightageApiService
+import com.example.retrofit.api.*
 import com.example.retrofit.data.LoginData
 import com.example.retrofit.injection.DaggerAppComponent
 import javax.inject.Inject
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         authApiService.login(LoginData("55555", "123456")).observe(this, Observer {
             when (it) {
-                is ApiResponse.ApiSuccessResponse -> {
+                is ApiSuccessResponse -> {
                     TOKEN = it.body.data.authenticationToken
                     getSharedPreferences("USER", Context.MODE_PRIVATE).edit {
                         putString("TOKEN", TOKEN)
@@ -44,12 +41,12 @@ class MainActivity : AppCompatActivity() {
 
                     freightageApiService.getFreightage("$AUTH_KEY:$TOKEN").observe(this, Observer { res ->
                         when(res) {
-                            is ApiResponse.ApiSuccessResponse -> {
+                            is ApiSuccessResponse -> {
                                 res.body.data.forEach { freightage ->
                                     Log.w(TAG, freightage.toString())
                                 }
                             }
-                            is ApiResponse.ApiErrorResponse -> {
+                            is ApiErrorResponse -> {
                                 Log.e(TAG, res.errorMessage)
                             }
                             else -> Log.w(TAG, "Nothing happened")

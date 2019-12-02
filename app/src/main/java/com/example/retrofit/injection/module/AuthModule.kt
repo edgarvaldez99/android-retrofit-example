@@ -22,9 +22,9 @@ class AuthModule {
     @Singleton
     @Provides
     fun provideAuthApiService(): AuthApiService {
-        val type = object : TypeToken<ResponseData<List<User>>>() {}.type
+        val type = object : TypeToken<ResponseData<User>>() {}.type
         val mapper = GsonBuilder()
-            .registerTypeAdapter(type, Deserializer<User>())
+            .registerTypeAdapter(type, Deserializer<ResponseData<User>>())
             .create()
 
         return getRetrofitBuilder(mapper, true).create(AuthApiService::class.java)
