@@ -1,9 +1,10 @@
 package com.example.retrofit.injection.module
 
 import com.example.retrofit.api.FreightageApiService
-import com.example.retrofit.api.configuration.DeserializerList
-import com.example.retrofit.api.configuration.getRetrofitBuilder
-import com.example.retrofit.data.FreightageList
+import com.example.retrofit.api.configuration.Deserializer
+import com.example.retrofit.data.Freightage
+import com.example.retrofit.data.ResponseData
+import com.example.retrofit.utils.getRetrofitBuilder
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.Module
@@ -15,9 +16,9 @@ class FreightageModule {
     @Singleton
     @Provides
     fun provideAuthApiService(): FreightageApiService {
-        val itemType = object : TypeToken<FreightageList>() {}.type
+        val type = object : TypeToken<ResponseData<List<Freightage>>>() {}.type
         val mapper = GsonBuilder()
-            .registerTypeAdapter(itemType, DeserializerList<FreightageList>())
+            .registerTypeAdapter(type, Deserializer<ResponseData<List<Freightage>>>())
             .create()
 
         return getRetrofitBuilder(mapper).create(FreightageApiService::class.java)

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         authApiService.login(LoginData("55555", "123456")).observe(this, Observer {
             when (it) {
                 is ApiResponse.ApiSuccessResponse -> {
-                    TOKEN = it.body.authenticationToken
+                    TOKEN = it.body.data.authenticationToken
                     getSharedPreferences("USER", Context.MODE_PRIVATE).edit {
                         putString("TOKEN", TOKEN)
                     }

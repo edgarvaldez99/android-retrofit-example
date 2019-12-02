@@ -2,10 +2,12 @@ package com.example.retrofit.injection.module
 
 import com.example.retrofit.api.AuthApiService
 import com.example.retrofit.api.configuration.Deserializer
-import com.example.retrofit.api.configuration.getRetrofitBuilder
+import com.example.retrofit.data.ResponseData
 import com.example.retrofit.data.User
 import com.example.retrofit.executor.IOExecutors
+import com.example.retrofit.utils.getRetrofitBuilder
 import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,8 +22,9 @@ class AuthModule {
     @Singleton
     @Provides
     fun provideAuthApiService(): AuthApiService {
+        val type = object : TypeToken<ResponseData<List<User>>>() {}.type
         val mapper = GsonBuilder()
-            .registerTypeAdapter(User::class.java, Deserializer<User>())
+            .registerTypeAdapter(type, Deserializer<User>())
             .create()
 
         return getRetrofitBuilder(mapper, true).create(AuthApiService::class.java)
